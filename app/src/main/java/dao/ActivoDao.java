@@ -1,5 +1,6 @@
 package dao;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -56,6 +57,23 @@ public class ActivoDao {
 
         return new Activo();
 
+    }
+
+
+    public void actualizar(Activo activo) {
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COL_CENTROCOSTOS, activo.getCentroCostos());
+        contentValues.put(COL_DESCRIPCION, activo.getDescripcion());
+        contentValues.put(COL_ESTADO, activo.getEstado());
+        contentValues.put(COL_FECHACOMPRA, activo.getFechaCompra());
+        contentValues.put(COL_MARCA, activo.getMarca());
+        contentValues.put(COL_PESO, activo.getPeso());
+        contentValues.put(COL_UBICACION, activo.getUbicacion());
+        contentValues.put(COL_PROVEEDOR, activo.getProveedor());
+        contentValues.put(COL_RESPONSABLE, activo.getResponsable());
+
+        db.update(TABLA, contentValues, COL_ID + "=?", new String[]{activo.getId()});
     }
 
     private Activo cursorToActivo(Cursor cursor) {
