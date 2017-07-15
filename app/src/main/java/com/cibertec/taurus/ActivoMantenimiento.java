@@ -1,11 +1,16 @@
 package com.cibertec.taurus;
 
+import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
+
+import java.util.Calendar;
 
 import dao.ActivoDao;
 import dao.MiscelaneoDao;
@@ -21,23 +26,79 @@ public class ActivoMantenimiento extends AppCompatActivity {
     private Spinner spCCostos, spTipo, spMarca, spEstado;
     private MiscelaneoAdapter costosAdapter, tipoAdapter, marcaAdapter, estadoAdapter;
 
+    private DatePickerDialog datePickerDialog;
     private Activo activo;
+    public static final int RESPONSABLE = 1;
+    public static final int PROVEEDOR = 2;
 
     private View.OnClickListener btnSeleccionarResponsableOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-
+            Intent intent = new Intent(ActivoMantenimiento.this, PersonaSelector.class);
+            intent.putExtra("tipo", RESPONSABLE);
+            startActivityForResult(intent, RESPONSABLE);
         }
     };
     private View.OnClickListener btnSeleccionarProveedorOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-
+            Intent intent = new Intent(ActivoMantenimiento.this, PersonaSelector.class);
+            intent.putExtra("tipo", PROVEEDOR);
+            startActivityForResult(intent, PROVEEDOR);
         }
     };
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode != RESULT_OK) {
+            return;
+        }
+
+        if (requestCode == RESPONSABLE) {
+            etResponsable.setText(data.getStringExtra("descripcion"));
+            activo.setResponsable(data.getStringExtra("id"));
+        } else if (requestCode == PROVEEDOR) {
+            etProveedor.setText(data.getStringExtra("descripcion"));
+            activo.setProveedor(data.getStringExtra("id"));
+        }
+    }
+
     private View.OnClickListener btnSeleccionarFechaOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+
+            int mYear;
+            int mMonth;
+            int mDay;
+
+            if (activo.getFechaCompra() == null || activo.getFechaCompra().trim().equals("")) {
+                final Calendar c = Calendar.getInstance();
+                mYear = c.get(Calendar.YEAR);
+                mMonth = c.get(Calendar.MONTH);
+                mDay = c.get(Calendar.DAY_OF_MONTH);
+            } else {
+                mYear = Integer.parseInt(activo.getFechaCompra().substring(0, 4));
+                mMonth = Integer.parseInt(activo.getFechaCompra().substring(5, 7)) - 1;
+                mDay = Integer.parseInt(activo.getFechaCompra().substring(8, 10));
+            }
+
+
+            datePickerDialog = new DatePickerDialog(ActivoMantenimiento.this,
+                    new DatePickerDialog.OnDateSetListener() {
+
+                        @Override
+                        public void onDateSet(DatePicker view, int year,
+                                              int monthOfYear, int dayOfMonth) {
+
+                            String anio = "" + year;
+                            String mes = monthOfYear + 1 < 10 ? "0" + (monthOfYear + 1) : "" + (monthOfYear + 1);
+                            String dia = dayOfMonth < 10 ? "0" + dayOfMonth : "" + dayOfMonth;
+
+                            etFecha.setText(anio + "-" + mes + "-"
+                                    + dia);
+                        }
+                    }, mYear, mMonth, mDay);
+            datePickerDialog.show();
 
         }
     };
@@ -55,8 +116,11 @@ public class ActivoMantenimiento extends AppCompatActivity {
             activo.setDescripcion(etDescripcion.getText().toString().trim());
             activo.setUbicacion(etUbicacion.getText().toString().trim());
             activo.setPeso(Double.parseDouble(etPeso.getText().toString().trim()));
+            activo.setFechaCompra(etFecha.getText().toString());
 
             new ActivoDao(ActivoMantenimiento.this).actualizar(activo);
+
+            finish();
 
         }
     };
@@ -65,48 +129,48 @@ public class ActivoMantenimiento extends AppCompatActivity {
         String mensaje = "Ingresar : ";
         boolean valida = true;
         if (TextUtils.isEmpty(etDescripcion.getText())) {
-            mensaje += " descripcion,";
+            mensaje = mensaje + " descripcion,";
             valida = false;
         }
         if (((Miscelaneo) (spCCostos.getSelectedItem())).getId() == 0) {
-            mensaje += " centro de costos,";
+            mensaje = mensaje + " centro de costos,";
             valida = false;
         }
         if (((Miscelaneo) (spTipo.getSelectedItem())).getId() == 0) {
-            mensaje += " tipo,";
+            mensaje = mensaje + " tipo,";
             valida = false;
         }
         if (((Miscelaneo) (spMarca.getSelectedItem())).getId() == 0) {
-            mensaje += " marca,";
+            mensaje = mensaje + " marca,";
             valida = false;
         }
         if (((Miscelaneo) (spEstado.getSelectedItem())).getId() == 0) {
-            mensaje += " estado,";
+            mensaje = mensaje + " estado,";
             valida = false;
         }
         if (TextUtils.isEmpty(etPeso.getText())) {
-            mensaje += " peso,";
+            mensaje = mensaje + " peso,";
             valida = false;
         }
         if (TextUtils.isEmpty(etUbicacion.getText())) {
-            mensaje += " ubicación,";
+            mensaje = mensaje + " ubicación,";
             valida = false;
         }
         if (activo.getResponsable().trim().equals("")) {
-            mensaje += " responsable,";
+            mensaje = mensaje + " responsable,";
             valida = false;
         }
         if (activo.getProveedor().trim().equals("")) {
-            mensaje += " proveedor,";
+            mensaje = mensaje + " proveedor,";
             valida = false;
         }
         if (TextUtils.isEmpty(etFecha.getText())) {
-            mensaje += " fecha";
+            mensaje = mensaje + " fecha,";
             valida = false;
         }
 
         if (!valida) {
-            Utils.makeToast(this, mensaje.substring(0, mensaje.length() - 1));
+            Utils.makeToast(ActivoMantenimiento.this, mensaje.substring(0, mensaje.length() - 1));
         }
         return valida;
     }

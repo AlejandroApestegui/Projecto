@@ -18,7 +18,7 @@ public class ActivoDao {
 
     private final String TABLA = "ACTIVOS";
     private final String COL_ID = "ACTIVO";
-    private final String COL_DESCRIPCION = "DESCIPCION";
+    private final String COL_DESCRIPCION = "DESCRIPCION";
     private final String COL_CENTROCOSTOS = "CENTROCOSTOS";
     private final String COL_TIPO = "TIPO";
     private final String COL_PESO = "PESO";
@@ -67,13 +67,14 @@ public class ActivoDao {
         contentValues.put(COL_DESCRIPCION, activo.getDescripcion());
         contentValues.put(COL_ESTADO, activo.getEstado());
         contentValues.put(COL_FECHACOMPRA, activo.getFechaCompra());
+        contentValues.put(COL_TIPO, activo.getTipo());
         contentValues.put(COL_MARCA, activo.getMarca());
         contentValues.put(COL_PESO, activo.getPeso());
         contentValues.put(COL_UBICACION, activo.getUbicacion());
         contentValues.put(COL_PROVEEDOR, activo.getProveedor());
         contentValues.put(COL_RESPONSABLE, activo.getResponsable());
 
-        db.update(TABLA, contentValues, COL_ID + "=?", new String[]{activo.getId()});
+        db.update(TABLA, contentValues, COL_ID + " = ?", new String[]{activo.getId()});
     }
 
     private Activo cursorToActivo(Cursor cursor) {
@@ -88,7 +89,9 @@ public class ActivoDao {
         activo.setEstado(cursor.isNull(6) ? 0 : cursor.getInt(6));
         activo.setUbicacion(cursor.isNull(7) ? "" : cursor.getString(7));
         activo.setResponsableNombre(cursor.isNull(14) ? "" : cursor.getString(14));
+        activo.setResponsable(cursor.isNull(13) ? "" : cursor.getString(13));
         activo.setProveedorNombre(cursor.isNull(12) ? "" : cursor.getString(12));
+        activo.setProveedor(cursor.isNull(11) ? "" : cursor.getString(11));
         activo.setFechaCompra(cursor.isNull(9) ? "" : cursor.getString(9));
 
         return activo;

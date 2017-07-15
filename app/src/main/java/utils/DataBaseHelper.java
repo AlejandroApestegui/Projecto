@@ -15,7 +15,7 @@ import java.io.OutputStream;
  * Created by apesteguia on 10/07/2017.
  */
 
-public class DataBaseHelper extends SQLiteOpenHelper{
+public class DataBaseHelper extends SQLiteOpenHelper {
 
     private static String DB_PATH = "/data/data/com.cibertec.taurus/databases/";
     private static String DB_NAME = "CIBERTEC.sqlite";

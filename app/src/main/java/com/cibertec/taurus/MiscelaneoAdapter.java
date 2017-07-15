@@ -1,10 +1,8 @@
 package com.cibertec.taurus;
 
 import android.content.Context;
-import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.constraint.solver.widgets.ConstraintWidgetContainer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,7 +28,7 @@ public class MiscelaneoAdapter extends ArrayAdapter<Miscelaneo> {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
 
         TextView tvMiscelaneoDescripcion;
-        if(convertView==null)
+        if (convertView == null)
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.miscelaneo_unidad, parent, false);
 
         Miscelaneo miscelaneo = getItem(position);

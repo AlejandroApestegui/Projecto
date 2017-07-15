@@ -8,19 +8,21 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Importar" />
+        android:text="Importar"
+        android:visibility="invisible" />
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:text="Exportar" />
+        android:text="Exportar"
+        android:visibility="invisible" />
 
     <Button
         android:id="@+id/btnBuscar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:text="Scanear" />
+        android:text="Escanear" />
 
 </RelativeLayout>
